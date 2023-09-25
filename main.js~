@@ -1,0 +1,212 @@
+
+var drag_target = null;
+var last_drag_target = null;
+
+var mouse_is_down = false;
+
+var cp = {x: 0, y: 0, zoom: 1}
+
+var cursor_offset = {x: 0, y: 0};
+
+var min_pane_size = {x: 100, y: 500};
+
+var panes = {};
+
+class Pane
+{
+  constructor(title)
+  {
+    // html structure
+    // - (this.)div
+    // | - headerdiv
+    // | | - titlediv
+    // | | - menubutton
+    // | | - closebutton
+    // | - contentdiv
+    // | | - [pane content]
+    this.div = document.createElement("div");
+    this.div.classList.add("pane");
+    this.headerdiv = document.createElement("div");
+    this.headerdiv.classList.add("pane_header");
+    this.div.append(this.headerdiv);
+    this.titlediv = document.createElement("div");
+    this.titlediv.classList.add("pane_title");
+    this.titlediv.innerHTML = title;
+    this.headerdiv.append(this.titlediv);
+    this.menubutton = document.createElement("button");
+    this.menubutton.classList.add("pane_menubutton");
+    this.headerdiv.append(this.menubutton);
+    this.closebutton = document.createElement("button");
+    this.closebutton.classList.add("pane_closebutton");
+    this.headerdiv.append(this.closebutton);
+    this.contentdiv = document.createElement("div");
+    this.contentdiv.classList.add("pane_content");
+    this.div.append(this.contentdiv);
+    panes[title] = this;
+  }
+}
+
+// dragger-v init
+//// el: dragger element
+function init_draggerv(el)
+{
+  el.setAttribute("draggable",false);
+  el.addEventListener("mousedown",(e) => {drag_target = e.target; document.addEventListener("mousemove",ondrag_draggerv);});
+  el.addEventListener("mouseup",(e) => {drag_target = null; document.removeEventListener("mousemove",ondrag_draggerv);});
+}
+
+// dragger-v dragging
+//// e: event
+function ondrag_draggerv(e)
+{
+  let mp = {x: e.clientX, y: e.clientY};
+  let toofar = false;
+  if(mp.x + min_pane_size.x > window.innerWidth) {toofar = true;}
+  if(toofar) {mp.x = window.innerWidth - min_pane_size.x;}
+  drag_target.style.left = (mp.x-4) + "px";
+  drag_target.previousElementSibling.style.width = (mp.x) + "px";
+  drag_target.nextElementSibling.style.width = "calc(100% - " + (mp.x) + "px)";
+  if(toofar && !mouse_is_down) {drag_target = null; document.removeEventListener("mousemove",ondrag_draggerv);};
+}
+
+// editor hovering
+//// e: event
+function onhover_editor(e)
+{
+  let mp = {x: e.clientX, y: e.clientY};
+  if(mp.x >= cp.x && mp.x <= grids[0].xt*grids[0].xs*cp.zoom+cp.x && mp.y >= cp.y && mp.y <= grids[0].yt*grids[0].ys*cp.zoom+cp.y)
+  {
+    mp.x = Math.floor((mp.x-cp.x)/(grids[0].xs*cp.zoom))*grids[0].xs*cp.zoom;
+    mp.y = Math.floor((mp.y-cp.y)/(grids[0].ys*cp.zoom))*grids[0].ys*cp.zoom;
+    create_square_cursor(document.querySelector("#cursor > svg"), grids[0].xs, grids[0].ys, 24*cp.zoom, 6*cp.zoom, 10*cp.zoom, cp.zoom);
+    document.querySelector("#cursor > svg").style.left = mp.x + cursor_offset.x + "px";
+    document.querySelector("#cursor > svg").style.top = mp.y + cursor_offset.y + "px";
+  }
+}
+
+// main init
+function init()
+{
+  // base mouse handling
+  document.addEventListener("mousedown",(e) => {mouse_is_down = true;});
+  document.addEventListener("mouseup",(e) => {mouse_is_down = false;});
+
+  // editor event init
+  init_editor_drag(document.getElementById("editor"));
+  init_editor_hover(document.getElementById("editor"));
+  document.getElementById("editor").addEventListener("wheel", onscroll_editor, false);
+
+  // dragger init
+  for(let el of document.getElementsByClassName("dragger-v"))
+  {
+    init_draggerv(el);
+  }
+
+  // pane init
+  document.getElementById("panes").append(new Pane("tiles").div);
+  
+  // svg cursor init
+  document.querySelector(".grid > svg").append(create_square_grid(document.querySelector(".grid > svg"), grids[0].xt, grids[0].yt, grids[0].xs, grids[0].ys, grid_thickness, cp.zoom));
+}
+
+// makes a square grid
+// arguments:
+//// svg: an svg element to put the path in
+//// xt: number of tiles wide in the x direction
+//// yt: number of tiles wide in the y direction
+//// xs: width of a tile
+//// ys: height of a tile
+//// thick: thickness of the grid lines
+//// zoom: how much the grid should be zoomed in by
+function create_square_grid(svg,xt,yt,xs,ys,thick,zoom)
+{
+  svg.setAttribute("width", xt*xs*zoom + thick + "px");
+  svg.setAttribute("height", yt*ys*zoom + thick + "px");
+  let path = document.createElementNS("http://www.w3.org/2000/svg","path");
+  let d = '';
+  let t = thick/2;
+  for(let i = 0; i <= xt; i++)
+  {
+    d += "M " + (i*xs*zoom + t) + " " + t + " L " + (i*xs*zoom + t) + " " + (yt*ys*zoom + 2*t) + " ";
+  }
+  for(let i = 0; i <= yt; i++)
+  {
+    d += "M " + 0 + " " + (i*ys*zoom + t) + " L " + (xt*xs*zoom + 2*t) + " " + (i*ys*zoom + t) + " ";
+  }
+  path.setAttribute("d",d);
+  path.style.strokeWidth = thick + "px";
+  path.setAttribute("fill","#0000");
+  path.setAttribute("stroke","#fff4");
+  return path;
+}
+
+// makes a square cursor
+// arguments:
+//// svg: an svg element to put the path in
+//// xs: tile width
+//// ys: tile height
+//// thick: outer thickness
+//// inset: diff between outer thickness and inner thickness
+//// round: amount to round the inner element
+//// zoom: global zoom factor
+function create_square_cursor(svg,xs,ys,thick,inset,round,zoom)
+{
+  let x = xs*zoom;
+  let y = ys*zoom;
+  let xt = xs*zoom + thick;
+  let yt = ys*zoom + thick;
+  let t = thick;
+  let am = 0.4; // how far in to go
+  let d = () => `M ${r+ins} ${ins} L ${x*am-r-ins} ${ins} \
+A ${r} ${r} 0 0 1 ${x*am-ins} ${r+ins} L ${x*am-ins} ${t-r-ins} \
+A ${r} ${r} 0 0 1 ${x*am-ins-r} ${t-ins} L ${t+ir-ins} ${t-ins} \
+A ${ir} ${ir} 0 0 0 ${t-ins} ${t+ir-ins} L ${t-ins} ${y*am-r-ins} \
+A ${r} ${r} 0 0 1 ${t-r-ins} ${y*am-ins} L ${r+ins} ${y*am-ins} \
+A ${r} ${r} 0 0 1 ${ins} ${y*am-r-ins} L ${ins} ${r+ins} \
+A ${r} ${r} 0 0 1 ${r+ins} ${ins} Z\
+\
+M ${xt-(r+ins)} ${ins} L ${xt-(x*am-r-ins)} ${ins} \
+A ${r} ${r} 0 0 0 ${xt-(x*am-ins)} ${r+ins} L ${xt-(x*am-ins)} ${t-r-ins} \
+A ${r} ${r} 0 0 0 ${xt-(x*am-ins-r)} ${t-ins} L ${xt-(t+ir-ins)} ${t-ins} \
+A ${ir} ${ir} 0 0 1 ${xt-(t-ins)} ${t+ir-ins} L ${xt-(t-ins)} ${y*am-r-ins} \
+A ${r} ${r} 0 0 0 ${xt-(t-r-ins)} ${y*am-ins} L ${xt-(r+ins)} ${y*am-ins} \
+A ${r} ${r} 0 0 0 ${xt-(ins)} ${y*am-r-ins} L ${xt-(ins)} ${r+ins} \
+A ${r} ${r} 0 0 0 ${xt-(r+ins)} ${ins} Z\
+\
+M ${r+ins} ${yt-(ins)} L ${x*am-r-ins} ${yt-(ins)} \
+A ${r} ${r} 0 0 0 ${x*am-ins} ${yt-(r+ins)} L ${x*am-ins} ${yt-(t-r-ins)} \
+A ${r} ${r} 0 0 0 ${x*am-ins-r} ${yt-(t-ins)} L ${t+ir-ins} ${yt-(t-ins)} \
+A ${ir} ${ir} 0 0 1 ${t-ins} ${yt-(t+ir-ins)} L ${t-ins} ${yt-(y*am-r-ins)} \
+A ${r} ${r} 0 0 0 ${t-r-ins} ${yt-(y*am-ins)} L ${r+ins} ${yt-(y*am-ins)} \
+A ${r} ${r} 0 0 0 ${ins} ${yt-(y*am-r-ins)} L ${ins} ${yt-(r+ins)} \
+A ${r} ${r} 0 0 0 ${r+ins} ${yt-(ins)} Z\
+\
+M ${xt-(r+ins)} ${yt-(ins)} L ${xt-(x*am-r-ins)} ${yt-(ins)} \
+A ${r} ${r} 0 0 1 ${xt-(x*am-ins)} ${yt-(r+ins)} L ${xt-(x*am-ins)} ${yt-(t-r-ins)} \
+A ${r} ${r} 0 0 1 ${xt-(x*am-ins-r)} ${yt-(t-ins)} L ${xt-(t+ir-ins)} ${yt-(t-ins)} \
+A ${ir} ${ir} 0 0 0 ${xt-(t-ins)} ${yt-(t+ir-ins)} L ${xt-(t-ins)} ${yt-(y*am-r-ins)} \
+A ${r} ${r} 0 0 1 ${xt-(t-r-ins)} ${yt-(y*am-ins)} L ${xt-(r+ins)} ${yt-(y*am-ins)} \
+A ${r} ${r} 0 0 1 ${xt-(ins)} ${yt-(y*am-r-ins)} L ${xt-(ins)} ${yt-(r+ins)} \
+A ${r} ${r} 0 0 1 ${xt-(r+ins)} ${yt-(ins)} Z
+  `;
+  svg.children[0].remove();
+  svg.children[0].remove();
+  svg.setAttribute("width", xt + "px");
+  svg.setAttribute("height", yt + "px");
+  cursor_offset.x = -thick/2 + grid_thickness/2;
+  cursor_offset.y = -thick/2 + grid_thickness/2;
+  let p = document.createElementNS("http://www.w3.org/2000/svg","path");
+  let r = round;
+  let ir = 0;
+  let ins = 0;
+  p.setAttribute("d",d());
+  p.setAttribute("fill","#000");
+  svg.append(p);
+  p = document.createElementNS("http://www.w3.org/2000/svg","path");
+  ins = inset;
+  r = round - inset;
+  ir = inset;
+  p.setAttribute("d",d());
+  p.setAttribute("fill","#fff");
+  svg.append(p);
+}

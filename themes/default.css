@@ -1,0 +1,56 @@
+:root
+{
+    --accent-hue: 330;
+    --bg-main: hsl(0 0% 40%);
+    --bg-dragger: hsl(0 0% 25%);
+    --bg-dragger-hover: hsl(var(--accent-hue) 100% 30%);
+    --bg-panes: hsl(0 0% 20%);
+    --bg-panes-dark: hsl(0 0% 10%);
+    --bg-pane-header: hsl(0 0% 25%);
+    --text: hsl(0 0% 100%);
+}
+
+#main
+{
+    background: var(--bg-main);
+}
+
+#panes
+{
+    background: var(--bg-panes);
+}
+
+.dragger-v
+{
+    background: var(--bg-dragger);
+    color: hsl(0 0% 70%);
+    transition: background 0.15s ease;
+}
+.dragger-v:hover
+{
+    background: var(--bg-dragger-hover);
+    color: hsl(0 0% 100%);
+}
+
+.pane
+{
+    color: var(--text);
+}
+
+.pane_header
+{
+    background: var(--bg-pane-header);
+    padding: 0 8px;
+}
+
+.pane button
+{
+    border: 1px solid var(--bg-panes-dark);
+    border-radius: 2px;
+    background: var(--bg-panes);
+    box-shadow: -1px 2px 0 var(--bg-panes-dark), 1px 2px 0 var(--bg-panes-dark);
+    height: 24px;
+    width: 24px;
+    padding: 0;
+    margin: 8px 0;
+}
