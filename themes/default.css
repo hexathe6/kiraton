@@ -12,7 +12,7 @@
 
 #main
 {
-    background: var(--bg-main);
+    /*background: var(--bg-main);*/
 }
 
 #panes
@@ -53,4 +53,25 @@
     width: 24px;
     padding: 0;
     margin: 8px 0;
+}
+
+.building_node
+{
+    fill: #aaa;
+    stroke: #000;
+    stroke-width: 2;
+    filter: drop-shadow(0 0 5px #000);
+}
+
+.building_node_halo
+{
+    fill: url(#building_node_grad_halo);
+}
+#building_node_grad_halo > stop:nth-child(1)
+{
+    stop-color: #fff0;
+}
+#building_node_grad_halo > stop:nth-child(2)
+{
+    stop-color: #aaa;
 }
