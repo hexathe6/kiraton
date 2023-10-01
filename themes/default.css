@@ -58,20 +58,24 @@
 .building_node
 {
     fill: #aaa;
-    stroke: #000;
+    stroke: #444;
     stroke-width: 2;
-    filter: drop-shadow(0 0 5px #000);
+    /*filter: drop-shadow(0 0 6px #444);*/
 }
 
 .building_node_halo
 {
     fill: url(#building_node_grad_halo);
+    stroke: #444;
+    stroke-width: 2;
 }
 #building_node_grad_halo > stop:nth-child(1)
 {
-    stop-color: #fff0;
+    stop-color: #08f0;
+    stop-color: #aaa8;
 }
 #building_node_grad_halo > stop:nth-child(2)
 {
-    stop-color: #aaa;
+    stop-color: #a5a8;
+    stop-color: #aaa8;
 }
