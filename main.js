@@ -103,12 +103,41 @@ function toggle_halos(type)
   }
 }
 
+// click-and-drag (mousedown handling)
+function cad_down(e)
+{
+  drag_target = e.target;
+  click_start_pos = {x: e.clientX, y: e.clientY};
+  document.addEventListener("mousemove",cad_move);
+
+
+}
+
+// click-and-drag (mousemove handling)
+function cad_move(e)
+{
+  click_end_pos = {x: e.clientX, y: e.clientY};
+  cp = {x: cp_old.x + (click_end_pos.x - click_start_pos.x), y: cp_old.y + (click_end_pos.y - click_start_pos.y)};
+  //console.log("gothere");
+  _update_camera();
+}
+
+// click-and-drag (mouseup handling)
+function cad_up(e)
+{
+  document.removeEventListener("mousemove",cad_move);
+
+  cp = {x: cp_old.x + (click_end_pos.x - click_start_pos.x), y: cp_old.y + (click_end_pos.y - click_start_pos.y)};
+  cp_old = cp;
+}
+
+
 // main init
 function init()
 {
   // base mouse handling
-  document.addEventListener("mousedown",(e) => {mouse_is_down = true;});
-  document.addEventListener("mouseup",(e) => {mouse_is_down = false;});
+  document.addEventListener("mousedown",(e) => {mouse_is_down = true; cad_down(e)});
+  document.addEventListener("mouseup",(e) => {mouse_is_down = false; cad_up(e)});
 
   c = document.getElementById("c");
   _init();

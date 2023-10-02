@@ -23,13 +23,19 @@ function _createbuilding(type,pos)
     let x = createsvgel("use");
     _layers.buildings.append(x);
     setAttributes(x,{href: "#building_node_defs", x: pos.x, y: pos.y});
-    x.addEventListener("click",() => {toggle_halos("building_node");});
+    x.addEventListener("click", () => {toggle_halos("building_node");}, {capture: true});
   }
 }
 
 function _create_road(a,b,upgrades)
 {
 
+}
+
+function _update_camera()
+{
+  let x = document.getElementById("camera");
+  setAttributes(x,{style: "transform: translate("+cp.x+"px, "+cp.y+"px)"});
 }
 
 // svg defs element
