@@ -37,6 +37,8 @@ function _createbuilding(id,type,pos)
   }
 }
 
+// create road elements
+// arguments: road -> road object containing id, connectends, and roadinfo
 function _create_road(road)
 {
   let a;
@@ -53,6 +55,7 @@ function _create_road(road)
   _layers.roads.append(l);
 }
 
+// removes building and halo elements by id
 function _destroybuilding(id)
 {
   for(let i = 0; i < _buildings.length; i++)
@@ -67,6 +70,7 @@ function _destroybuilding(id)
   }
 }
 
+// removes a road element by id
 function _destroy_road(id)
 {
   for(let i = 0; i < _roads.length; i++)
@@ -79,6 +83,7 @@ function _destroy_road(id)
   }
 }
 
+// sets camera position
 function _update_camera()
 {
   let x = document.getElementById("camera");

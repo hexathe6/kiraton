@@ -62,6 +62,10 @@ var next_road_ids = [0];
 // ----------: ----------------: if there's more than one element, `pop` the last element
 // ----------: on road destruction, `push` its road id here
 
+// allows 'comparisons' between multiple function arguments more concisely
+// arguments: func -> a single-argument function (like (a) => x.y[a])
+// ---------: arg -> an array of values to pass to `func`
+// ---------: comp: -> a 2-argument "comparison" function (like (a,b) => (a || b)). should be commutative.
 function multivalue_compare(func,arg,comp)
 {
   let a = func(arg[0]);
@@ -167,6 +171,7 @@ function connect_buildings(a,b,roadinfo)
   _create_road(roads[roads.length-1]);
 }
 
+// toggles a group of halos by building type
 function toggle_halos(type)
 {
   halos_on[type] = !halos_on[type];
