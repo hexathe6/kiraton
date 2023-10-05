@@ -79,3 +79,9 @@
     stop-color: #a5a8;
     stop-color: #aaa8;
 }
+
+.road
+{
+    stroke: #444;
+    stroke-width: 2;
+}

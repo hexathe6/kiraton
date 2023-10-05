@@ -11,7 +11,6 @@ var last_drag_target = null;
 // ----------: on mouseup, set `last_drag_target` to `drag_target` and set `drag_target` to null
 
 // click positions. used for click-and-drag
-// NOT IMPLEMENTED/USED
 var click_start_pos = null;
 var click_end_pos = null;
 // set policy: on mousedown, set `click_start_pos` to the mouse position
@@ -24,11 +23,10 @@ var mouse_is_down = false;
 // ----------: on mouseup, set to false
 
 // camera position, used for panning and zooming
-// NOT IMPLEMENTED
+// ZOOMING IS NOT IMPLEMENTED
 var cp = {x: 0, y: 0, zoom: 1};
 
 // old camera position, for click-and-dragging the screen around
-// NOT IMPLEMENTED
 var cp_old = {x: 0, y: 0, zoom: 1};
 
 // "canvas", currently an svg element with id="c" (set on init)
@@ -37,6 +35,12 @@ var c;
 // list of buildings, containing all their non-graphical/backend data
 var buildings = [];
 // format: array of {id: <number>, type: <building type [string]>, pos: <position [{x,y}]>, connections: [list of road ids], [other attributes]}
+
+// next available ids for buildings
+var next_building_ids = [0];
+// set policy: on building creation: if there's only one element, increment `next_building_ids[0]`
+// ----------: --------------------: if there's more than one element, `pop` the last element
+// ----------: on building destruction, `push` its building id here
 
 // lists of 'halo's (colored rings around buildings that indicate range)
 var halos = {};
@@ -48,7 +52,25 @@ var halos_on = {};
 
 // list of roads (they connect buildings)
 var roads = [];
-// format: [list of {roadinfo: {road info}, [id of building a, id of building b]}]
+// format: [list of {id: id, roadinfo: {road info}, connectends: [id of building a, id of building b]}]
+// roadinfo format: {level: road level} // i might add more later
+// definition note: connectends are the things that get connected by a connection 
+
+// next available ids for buildings
+var next_road_ids = [0];
+// set policy: on road creation: if there's only one element, increment `next_road_ids[0]`
+// ----------: ----------------: if there's more than one element, `pop` the last element
+// ----------: on road destruction, `push` its road id here
+
+function multivalue_compare(func,arg,comp)
+{
+  let a = func(arg[0]);
+  for(let i = 1; i < arg.length; i++)
+  {
+    a = comp(a,func(arg[i]));
+  }
+  return a;
+}
 
 // create an svg element (DRYer than otherwise)
 function createsvgel(t)
@@ -77,17 +99,72 @@ function setstyles(el,attrs)
 // create new building (logical and graphical)
 function createbuilding(type,pos)
 {
-  buildings.push({type: type, pos: pos});
-  _createbuilding(type,pos);
+  let id;
+  if(next_building_ids.length == 1)
+  {
+    id = next_building_ids[0];
+    next_building_ids[0]++;
+  }
+  else {id = next_building_ids.pop();}
+
+  buildings.push({id: id, type: type, pos: pos});
+  _createbuilding(id,type,pos);
   if(type == "node")
   {
     // traffic node specific things here
   }
 }
 
-function connect_buildings(a,b)
+// does what it says
+// arguments: id -> id of building to destroy
+function destroybuilding(id)
 {
-  
+  for(let b = 0; b < buildings.length; b++)
+  {
+    if(buildings[b].id == id)
+    {
+      _destroybuilding(b);
+      next_building_ids.push(b);
+      buildings.splice(b,1);
+    }
+  }
+  for(let b = 0; b < roads.length; b++)
+  {
+    if(multivalue_compare((a) => (roads[b].connectends[a] == id),[0,1],(a,b) => (a || b)))
+    {
+      _destroy_road(roads[b].id);
+      destroy_road(roads[b].id)
+    }
+  }
+}
+
+// does what it says
+// arguments: id -> id of road to destroy
+function destroy_road(id)
+{
+  next_road_ids.push(id);
+  for(let i = 0; i < roads.length; i++)
+  {
+    if(roads[i].id == id) {roads.splice(i,1);}
+  }
+}
+
+// connects two buildings together with a road
+// arguments: a -> id of building a
+// ---------: b -> id of building b
+// ---------: roadinfo -> properties of the road
+function connect_buildings(a,b,roadinfo)
+{
+  let id;
+  if(next_road_ids.length == 1)
+  {
+    id = next_road_ids[0];
+    next_road_ids[0]++;
+  }
+  else {id = next_road_ids.pop();}
+
+  roads.push({id: id, roadinfo: roadinfo, connectends: [a,b]});
+  _create_road(roads[roads.length-1]);
 }
 
 function toggle_halos(type)
@@ -149,5 +226,10 @@ function init()
   
   createbuilding("node", {x: 500, y: 500});
   createbuilding("node", {x: 400, y: 500});
+  createbuilding("node", {x: 450, y: 400});
+  connect_buildings(0,1);
+  connect_buildings(1,2);
+  connect_buildings(2,0);
+  destroybuilding(0);
 }
 
