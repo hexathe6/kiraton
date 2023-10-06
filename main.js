@@ -1,7 +1,7 @@
 
 // TODO
 //
-// - make `connect_buildings` create a road <use> 
+// - split halos into their edges and fills
 
 // drag targets. used for click-and-drag
 // NOT IMPLEMENTED/USED
@@ -101,7 +101,7 @@ function setstyles(el,attrs)
 }
 
 // create new building (logical and graphical)
-function createbuilding(type,pos)
+function createbuilding_inner(type,pos)
 {
   let id;
   if(next_building_ids.length == 1)
@@ -117,6 +117,7 @@ function createbuilding(type,pos)
   {
     // traffic node specific things here
   }
+  return id;
 }
 
 // does what it says
@@ -169,6 +170,15 @@ function connect_buildings(a,b,roadinfo)
 
   roads.push({id: id, roadinfo: roadinfo, connectends: [a,b]});
   _create_road(roads[roads.length-1]);
+}
+
+// arguments: type -> building type
+// ---------: pos -> building position as {x,y}
+// ---------: from -> building id of the building from which this building is constucted
+function createbuilding(type,pos,from)
+{
+  let id = createbuilding_inner(type,pos);
+  connect_buildings(from,id,{});
 }
 
 // toggles a group of halos by building type
@@ -229,12 +239,9 @@ function init()
   
   halos_on.building_node = true;
   
-  createbuilding("node", {x: 500, y: 500});
-  createbuilding("node", {x: 400, y: 500});
-  createbuilding("node", {x: 450, y: 400});
-  connect_buildings(0,1);
-  connect_buildings(1,2);
-  connect_buildings(2,0);
-  destroybuilding(0);
+  createbuilding_inner("node", {x: 500, y: 500});
+  createbuilding("node", {x: 400, y: 500}, 0);
+  createbuilding("node", {x: 450, y: 400}, 1);
+  //destroybuilding(0);
 }
 

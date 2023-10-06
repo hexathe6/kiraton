@@ -63,12 +63,24 @@
     /*filter: drop-shadow(0 0 6px #444);*/
 }
 
-.building_node_halo
+/*.building_node_halo
 {
     fill: url(#building_node_grad_halo);
     stroke: #444;
     stroke-width: 2;
+}*/
+
+.building_node_halo_edges
+{
+    fill: #0000;
+    stroke: #444;
+    stroke-width: 2;
 }
+.building_node_halo_fill
+{
+    fill: #aaa6;
+}
+
 #building_node_grad_halo > stop:nth-child(1)
 {
     stop-color: #08f0;

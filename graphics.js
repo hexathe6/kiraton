@@ -6,13 +6,17 @@ var _layers = {};
 var _buildings = [];
 // format: [{id: id, el: element}, ...]
 
+// <g> layers for halo pieces
+var _halo_edge_g;
+var _halo_fill_g;
+
 // list of halo layers, keyed to type
 var _halos = {};
 // format: {<halo type>: <g> element, ...}
 
 // list of the halo elements with their corresponding building ids
 var _halo_els = [];
-// format: [{id: id, el: element}, ...]
+// format: [{id: id, els: {edge: element, fill: element}}, ...]
 
 // list of road elements
 var _roads = [];
@@ -23,11 +27,21 @@ function _createbuilding(id,type,pos)
 {
   if(type == "node")
   {
-    let xh = createsvgel("use");
-    setAttributes(xh,{href: "#building_node_defs_halo", x: pos.x, y: pos.y});
-    _halos.building_node.append(xh);
-    halos.building_node.push(xh);
-    _halo_els.push({id: id, el: xh});
+    _halo_els.push({id: id, els: {}});
+
+    let xhe = createsvgel("use");
+    setAttributes(xhe,{href: "#building_node_defs_halo_edges", x: pos.x, y: pos.y});
+    //_halos.building_node.append(xhe);
+    _halo_edge_g.append(xhe);
+    halos.building_node.push(xhe);
+    _halo_els[_halo_els.length-1].els.edge = xhe;
+    
+    let xhf = createsvgel("use");
+    setAttributes(xhf,{href: "#building_node_defs_halo_fill", x: pos.x, y: pos.y});
+    //_halos.building_node.append(xhf);
+    _halo_fill_g.append(xhf);
+    halos.building_node.push(xhf);
+    _halo_els[_halo_els.length-1].els.fill = xhf;
 
     let x = createsvgel("use");
     _layers.buildings.append(x);
@@ -107,6 +121,10 @@ function _init()
   // halo types
   _halos.building_node = document.getElementById("halos");
 
+  // halo sublayers
+  _halo_edge_g = document.getElementById("halos_edges");
+  _halo_fill_g = document.getElementById("halos_fills");
+  
   // node 'halo' gradient
   {
     let g = createsvgel("radialGradient");
@@ -120,11 +138,18 @@ function _init()
     g.append(s);
 
     // original halo, for <use>
-    let xh = createsvgel("ellipse");
-    xh.id = "building_node_defs_halo";
-    xh.classList.add("building_node_halo");
-    setAttributes(xh,{rx: 200, ry: 200});
-    cd.append(xh);
+    // edge
+    let xhe = createsvgel("ellipse");
+    xhe.id = "building_node_defs_halo_edges";
+    xhe.classList.add("building_node_halo_edges");
+    setAttributes(xhe,{rx: 200, ry: 200});
+    cd.append(xhe);
+    // fill
+    let xhf = createsvgel("ellipse");
+    xhf.id = "building_node_defs_halo_fill";
+    xhf.classList.add("building_node_halo_fill");
+    setAttributes(xhf,{rx: 200, ry: 200});
+    cd.append(xhf);
   }
 
 
