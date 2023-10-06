@@ -1,22 +1,22 @@
 # kiraton
-## NOTE: THIS IS *VERY* UNFINISHED
----
+NOTE: THIS IS *VERY* UNFINISHED
+-------------------------------
 
 kiraton is/will be a 2d rts game inspired by achikaps
 
-### gameplay
----
+gameplay
+--------
 
 none, yet
 
-### contributors
----
+contributors
+------------
 
 me, and please don't contribute any code until the note at the top
 says it's at least prealpha.
 
-### license
----
+license
+-------
 
 agpl v3, aka the gpl of webapps
 
