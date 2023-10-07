@@ -210,7 +210,6 @@ function cad_move(e)
 {
   click_end_pos = {x: e.clientX, y: e.clientY};
   cp = {x: cp_old.x + (click_end_pos.x - click_start_pos.x), y: cp_old.y + (click_end_pos.y - click_start_pos.y)};
-  //console.log("gothere");
   _update_camera();
 }
 
@@ -219,8 +218,14 @@ function cad_up(e)
 {
   document.removeEventListener("mousemove",cad_move);
 
-  cp = {x: cp_old.x + (click_end_pos.x - click_start_pos.x), y: cp_old.y + (click_end_pos.y - click_start_pos.y)};
-  cp_old = cp;
+  if(click_end_pos)
+  {
+    cp = {x: cp_old.x + (click_end_pos.x - click_start_pos.x), y: cp_old.y + (click_end_pos.y - click_start_pos.y)};
+    cp_old = cp;
+  }
+
+  click_start_pos = null;
+  click_end_pos = null;
 }
 
 
