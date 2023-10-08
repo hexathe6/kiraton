@@ -1,10 +1,10 @@
 <!DOCTYPE HTML>
 <html>
   <head>
+    <meta charset="UTF-8"/>
+    <meta name="author" content="hexa6"/>
     <link rel="icon" href=" ">
     <script type="text/javascript" src="loader.js" loadfile="loadfile"></script>
-    <link rel="stylesheet" href="layout.css"/>
-    <link rel="stylesheet" href="themes/default.css"/>
     <title>kiraton</title>
   </head>
   <body onload="__loader_init();">
@@ -31,14 +31,27 @@
                 <div class="left_tab active">unit info</div>
                 <div class="left_tab inactive">debug</div>
               </div>
-              <div id="right_sidebar_content" class="sidebar content">
-                <div id="right_sidebar_content_build" class="content inactive">
-                  <div id="right_sidebar_content_build_select" class="content active">
-                    <div style="margin: 16px; width: calc(100% - 32px); height: calc(100% - 32px); display: grid; align-content: center; justify-content: center; background: #0002">
+              <div id="right_sidebar_content" class="sidebar content state_build_select">
+                <div id="right_sidebar_content_build" class="content">
+                  <div id="right_sidebar_content_build_title" class="title">
+                    <div id="right_sidebar_content_build_title_title" class="content_title">
+                      build
+                    </div>
+                    <div id="right_sidebar_content_build_title_right" class="content_right">
+                      <div class="close_button">
+                        close
+                      </div>
+                    </div>
+                  </div>
+                  <div id="right_sidebar_content_build_select" class="content">
+                    <div id="right_sidebar_content_build_select_select">
                       click to select a building to build from
                     </div>
                   </div>
-                  <div id="right_sidebar_content_build_build" class="content inactive">
+                  <div id="right_sidebar_content_build_build" class="content">
+                    <div id="right_sidebar_content_build_build_container">
+                      <div
+                    </div>
                   </div>
                 </div>
               </div>

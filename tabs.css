@@ -1,0 +1,5 @@
+#right_sidebar_content.state_build_select > :not(#right_sidebar_content_build),
+#right_sidebar_content.state_build_select > #right_sidebar_content_build > :not(#right_sidebar_content_build_select):not(.title)
+{
+    display: none;
+}
