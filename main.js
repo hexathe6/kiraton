@@ -208,13 +208,19 @@ function toggle_halos(type)
   }
 }
 
-function set_tab(e,name)
+// on tab click, set the tab to be the clicked tab
+function set_tab(e)
 {
   let prev = document.querySelector(".left_tab.active");
   prev.classList.remove("active");
   prev.classList.add("inactive");
-  if(e.target.classList.contains("left_tab")) {e.target.classList.add("active");}
-  if(e.target.classList.contains("text_vertical_left")) {e.target.parentElement.classList.add("active");}
+  let et;
+  if(e.target.classList.contains("left_tab")) {et = e.target;}
+  if(e.target.classList.contains("text_vertical_left")) {et = e.target.parentElement;}
+  et.classList.add("active");
+  let content = document.getElementById("right_sidebar_content");
+  content.classList.remove(prev.id.split("_")[0]);
+  content.classList.add(et.id.split("_")[0]);
 }
 
 // click-and-drag (mousedown handling)
@@ -267,7 +273,7 @@ function init()
   halos_on.building_node = true;
 
   // setup tab events
-  multi_execute_simple((n) => {document.getElementById(n + "_tab").addEventListener("click", (e) => {set_tab(e,n);});}, ["build","population","units","debug"]);
+  multi_execute_simple((n) => {document.getElementById(n + "_tab").addEventListener("click", (e) => {set_tab(e);});}, ["build","population","units","debug"]);
   
   createbuilding_inner("node", {x: 500, y: 500});
   createbuilding("node", {x: 400, y: 500}, 0);
