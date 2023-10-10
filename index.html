@@ -7,6 +7,7 @@
     <script type="text/javascript" src="loader.js" loadfile="loadfile"></script>
     <title>kiraton</title>
   </head>
+
   <body onload="__loader_init();">
     <div id="main">
       <svg id="c" style="width: 100%; height: 100%">
@@ -22,17 +23,20 @@
           <g id="items"></g>
           <g id="units"></g>
         </g>
+
         <g id="ui">
           <foreignObject x="70%" y="0" width="30%" height="100%">
             <div id="right_sidebar">
               <div id="right_sidebar_left_tabs" class="sidebar left_tabs">
-                <div class="left_tab inactive"><div class="text_vertical_left">build</div></div>
-                <div class="left_tab inactive"><div class="text_vertical_left">population</div></div>
-                <div class="left_tab active"><div class="text_vertical_left">unit info</div></div>
-                <div class="left_tab inactive"><div class="text_vertical_left">debug</div></div>
+                <div id="build_tab" class="left_tab inactive"><div class="text_vertical_left">build</div></div>
+                <div id="population_tab" class="left_tab inactive"><div class="text_vertical_left">population</div></div>
+                <div id="units_tab" class="left_tab active"><div class="text_vertical_left">unit info</div></div>
+                <div id="debug_tab" class="left_tab inactive"><div class="text_vertical_left">debug</div></div>
               </div>
-              <div id="right_sidebar_content" class="sidebar content state_build_select">
-                <div id="right_sidebar_content_build" class="content">
+
+              <div id="right_sidebar_content" class="sidebar content state build select">
+
+                <div id="right_sidebar_content_build" class="content page">
                   <div id="right_sidebar_content_build_title" class="title">
                     <div id="right_sidebar_content_build_title_title" class="content_title">
                       build
@@ -43,6 +47,7 @@
                       </div>
                     </div>
                   </div>
+
                   <div id="right_sidebar_content_build_select" class="content">
                     <div id="right_sidebar_content_build_select_select">
                       click to select a building to build from
@@ -50,12 +55,28 @@
                   </div>
                   <div id="right_sidebar_content_build_build" class="content">
                     <div id="right_sidebar_content_build_build_container">
-                      <div
+                      <div></div>
                     </div>
                   </div>
                 </div>
+                <div id="right_sidebar_content_population" class="content page">
+                  <div id="right_sidebar_content_population_title" class="title">
+                    <div id="right_sidebar_content_population_title_title" class="content_title">
+                      unit population
+                    </div>
+                    <div id="right_sidebar_content_population_title_right" class="content_right">
+                      <div class="close_button">
+                        close
+                      </div>
+                    </div>
+                    <div id="right_sidebar_content_population_overview" class="content">
+                      
+                    </div>
+                  </div>
+                  
+
+                </div>
               </div>
-            </div>
           </foreignObject>
         </g>
       </svg>

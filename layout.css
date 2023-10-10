@@ -74,6 +74,7 @@ body
 {
     width: max-content;
     transform: rotate(-90deg);
+    user-select: none;
 }
 
 .sidebar.content
@@ -96,6 +97,7 @@ body
 #right_sidebar_content_build_title
 {
     margin: 8px;
+    margin-bottom: 0;
     border-bottom: 2px solid #444;
     display: flex;
     flex-direction: row;
@@ -113,4 +115,10 @@ body
     align-content: center;
     justify-content: center;
     background: #0002;
+}
+
+.content.page
+{
+    display: flex;
+    flex-direction: column;
 }

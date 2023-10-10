@@ -62,6 +62,19 @@ var next_road_ids = [0];
 // ----------: ----------------: if there's more than one element, `pop` the last element
 // ----------: on road destruction, `push` its road id here
 
+// allows simple DRYification
+// arguments: func -> a single-argument function (like (a) => x.y[a])
+// ---------: arg -> an array of values to pass to `func`
+function multi_execute_simple(func,arg)
+{
+  let out = [];
+  for(let i = 0; i < arg.length; i++)
+  {
+    out.push(func(arg[i]));
+  }
+  return out;
+}
+
 // allows 'comparisons' between multiple function arguments more concisely
 // arguments: func -> a single-argument function (like (a) => x.y[a])
 // ---------: arg -> an array of values to pass to `func`
@@ -195,6 +208,15 @@ function toggle_halos(type)
   }
 }
 
+function set_tab(e,name)
+{
+  let prev = document.querySelector(".left_tab.active");
+  prev.classList.remove("active");
+  prev.classList.add("inactive");
+  if(e.target.classList.contains("left_tab")) {e.target.classList.add("active");}
+  if(e.target.classList.contains("text_vertical_left")) {e.target.parentElement.classList.add("active");}
+}
+
 // click-and-drag (mousedown handling)
 function cad_down(e)
 {
@@ -243,6 +265,9 @@ function init()
   halos.building_node = [];
   
   halos_on.building_node = true;
+
+  // setup tab events
+  multi_execute_simple((n) => {document.getElementById(n + "_tab").addEventListener("click", (e) => {set_tab(e,n);});}, ["build","population","units","debug"]);
   
   createbuilding_inner("node", {x: 500, y: 500});
   createbuilding("node", {x: 400, y: 500}, 0);
