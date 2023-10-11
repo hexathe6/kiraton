@@ -89,12 +89,13 @@ body
     height: 100%;
 }
 
-.content_title
+.content.page
 {
-    font-size: 24pt;
+    display: flex;
+    flex-direction: column;
 }
 
-#right_sidebar_content_build_title
+.content.page > .title
 {
     margin: 8px;
     margin-bottom: 0;
@@ -105,8 +106,12 @@ body
     justify-content: space-between;
 }
 
-#right_sidebar_content_build_select,
-#right_sidebar_content_build_build
+.content_title
+{
+    font-size: 20pt;
+}
+
+.content.page > .content
 {
     margin: 16px;
     width: calc(100% - 32px);
@@ -117,8 +122,3 @@ body
     background: #0002;
 }
 
-.content.page
-{
-    display: flex;
-    flex-direction: column;
-}
