@@ -47,7 +47,8 @@ function _createbuilding(id,type,pos)
     _layers.buildings.append(x);
     _buildings.push({id: id, el: x});
     setAttributes(x,{href: "#building_node_defs", x: pos.x, y: pos.y});
-    x.addEventListener("click", () => {toggle_halos("building_node");}, {capture: true});
+    x.addEventListener("click", () => {toggle_halos("building_node");});
+    x.addEventListener("click", () => {select_building(id);});
   }
 }
 

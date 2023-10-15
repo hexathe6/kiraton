@@ -53,6 +53,7 @@ body
     border: 2px solid #444;
     border-right: none;
     border-radius: 4px 0 0 4px;
+    /*transition: 0.1s all ease;*/ /* i'm not going to add fancy graphics stuff until the base game mechanics are done */
 }
 
 .left_tab.inactive
@@ -105,20 +106,44 @@ body
     align-items: center;
     justify-content: space-between;
 }
+.title.closed
+{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
 
-.content_title
+h1.content_title
 {
     font-size: 20pt;
+    margin: 0;
+}
+h2.content_title
+{
+    font-size: 16pt;
+    margin: 0;
 }
 
 .content.page > .content
 {
-    margin: 16px;
-    width: calc(100% - 32px);
-    height: calc(100% - 32px);
+    margin: 8px;
+    width: calc(100% - 16px);
+    height: calc(100% - 16px);
     display: grid;
-    align-content: center;
-    justify-content: center;
     background: #0002;
 }
+.content.centered
+{
+    align-content: center;
+    justify-content: center;
+}
 
+.right_sidebar_inner_tab
+{
+    margin: 8px;
+    padding: 8px;
+    border: 2px solid #444;
+    border-radius: 4px;
+    background: #fff8;
+}

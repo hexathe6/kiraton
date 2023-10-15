@@ -8,6 +8,9 @@
     --bg-panes-dark: hsl(0 0% 10%);
     --bg-pane-header: hsl(0 0% 25%);
     --text: hsl(0 0% 100%);
+
+    --building-node-outline-color: #444;
+    --building-node-outline-width: 2;
 }
 
 #main
@@ -58,8 +61,8 @@
 .building_node
 {
     fill: #aaa;
-    stroke: #444;
-    stroke-width: 2;
+    stroke: var(--building-node-outline-color);
+    stroke-width: var(--building-node-outline-width);
     /*filter: drop-shadow(0 0 6px #444);*/
 }
 
@@ -96,4 +99,10 @@
 {
     stroke: #444;
     stroke-width: 2;
+}
+
+.selected_building
+{
+    --building-node-outline-color: #226;
+    --building-node-outline-width: 3;
 }

@@ -29,6 +29,9 @@ var cp = {x: 0, y: 0, zoom: 1};
 // old camera position, for click-and-dragging the screen around
 var cp_old = {x: 0, y: 0, zoom: 1};
 
+// if true, disable click and drag
+var nocad = false;
+
 // "canvas", currently an svg element with id="c" (set on init)
 var c;
 
@@ -61,6 +64,18 @@ var next_road_ids = [0];
 // set policy: on road creation: if there's only one element, increment `next_road_ids[0]`
 // ----------: ----------------: if there's more than one element, `pop` the last element
 // ----------: on road destruction, `push` its road id here
+
+// state of the tabs and stuff, for logic
+var tab_state = "build_select";
+// set policy: on tab change or tab action, set to a fully identifying name
+// todo: make that happen
+// fully identifying names:
+//// build_select: the build tab is open but you haven't selected a building yet
+//// build_selected: the build tab is open and you have selected a building
+// todo: add the rest of the fully identifying names
+
+// tab-related data that should persist through tab switching
+var tab_memory = {build: {selected: null}, population: {}, units: {}, debug: {}};
 
 // allows simple DRYification
 // arguments: func -> a single-argument function (like (a) => x.y[a])
@@ -197,6 +212,8 @@ function createbuilding(type,pos,from)
 // toggles a group of halos by building type
 function toggle_halos(type)
 {
+  if(tab_state == "build_select") {return;}
+  
   halos_on[type] = !halos_on[type];
   let t1 = ["building_node"];
   if(t1.includes(type))
@@ -206,6 +223,26 @@ function toggle_halos(type)
       el.setAttribute("opacity", halos_on[type] ? "100%" : "0%");
     }
   }
+}
+
+function select_building(id)
+{
+  if(tab_state != "build_select") {return;}
+  
+  let b;
+  for(let i = 0; i < buildings.length; i++)
+  {
+    if(buildings[i].id == id) {b = i;}
+  }
+
+  tab_memory.build.selected = id;
+  document.getElementById("right_sidebar_content").classList.remove("select");
+  document.getElementById("right_sidebar_content").classList.add("selected");
+  tab_state = "build_selected";
+  nocad = false;
+  
+  // todo: move to graphics.js
+  _buildings[b].el.classList.add("selected_building");
 }
 
 // on tab click, set the tab to be the clicked tab
@@ -221,39 +258,58 @@ function set_tab(e)
   let content = document.getElementById("right_sidebar_content");
   content.classList.remove(prev.id.split("_")[0]);
   content.classList.add(et.id.split("_")[0]);
+
+  if(et.id.split("_")[0] == "build")
+  {
+    nocad = true;
+    tab_state = "build_select";
+  }
+
+  for(let i = 0; i < buildings.length; i++)
+  {
+    _buildings[i].el.classList.remove("selected_building");
+  }
 }
 
 // click-and-drag (mousedown handling)
 function cad_down(e)
 {
-  drag_target = e.target;
-  click_start_pos = {x: e.clientX, y: e.clientY};
-  document.addEventListener("mousemove",cad_move);
-
+  if(!nocad)
+  {
+    drag_target = e.target;
+    click_start_pos = {x: e.clientX, y: e.clientY};
+    document.addEventListener("mousemove",cad_move);
+  }
 
 }
 
 // click-and-drag (mousemove handling)
 function cad_move(e)
 {
-  click_end_pos = {x: e.clientX, y: e.clientY};
-  cp = {x: cp_old.x + (click_end_pos.x - click_start_pos.x), y: cp_old.y + (click_end_pos.y - click_start_pos.y)};
-  _update_camera();
+  if(!nocad)
+  {
+    click_end_pos = {x: e.clientX, y: e.clientY};
+    cp = {x: cp_old.x + (click_end_pos.x - click_start_pos.x), y: cp_old.y + (click_end_pos.y - click_start_pos.y)};
+    _update_camera();
+  }
 }
 
 // click-and-drag (mouseup handling)
 function cad_up(e)
 {
-  document.removeEventListener("mousemove",cad_move);
-
-  if(click_end_pos)
+  if(!nocad)
   {
-    cp = {x: cp_old.x + (click_end_pos.x - click_start_pos.x), y: cp_old.y + (click_end_pos.y - click_start_pos.y)};
-    cp_old = cp;
+    document.removeEventListener("mousemove",cad_move);
+    
+    if(click_end_pos)
+    {
+      cp = {x: cp_old.x + (click_end_pos.x - click_start_pos.x), y: cp_old.y + (click_end_pos.y - click_start_pos.y)};
+      cp_old = cp;
+    }
+    
+    click_start_pos = null;
+    click_end_pos = null;
   }
-
-  click_start_pos = null;
-  click_end_pos = null;
 }
 
 
@@ -273,7 +329,7 @@ function init()
   halos_on.building_node = true;
 
   // setup tab events
-  multi_execute_simple((n) => {document.getElementById(n + "_tab").addEventListener("click", (e) => {set_tab(e);});}, ["build","population","units","debug"]);
+  multi_execute_simple((n) => {document.getElementById(n + "_tab").addEventListener("mousedown", (e) => {nocad = true; document.getElementById(n + "_tab").addEventListener("mouseup", function tab_mouseup(e) {set_tab(e); document.getElementById(n + "_tab").removeEventListener("mouseup",tab_mouseup); nocad = false});})}, ["build","population","units","debug"]);
   
   createbuilding_inner("node", {x: 500, y: 500});
   createbuilding("node", {x: 400, y: 500}, 0);
