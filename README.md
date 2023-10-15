@@ -1,13 +1,12 @@
 # kiraton
-NOTE: THIS IS *VERY* UNFINISHED, PRE-PREALPHA AT BEST
------------------------------------------------------
+## NOTE: THIS IS *VERY* UNFINISHED, PRE-PREALPHA AT BEST
 
 kiraton is/will be a 2d rts game inspired by achikaps, so play that
 while you're waiting for this.
 
-gameplay
---------
+## gameplay
 
+### current 
 none, yet
 
 there will be stuff like
@@ -17,21 +16,24 @@ there will be stuff like
  - lots of building types and items
  - unit equipment (maybe)
 
-social
-------
+## social
 
 discord: https://discord.gg/DAuUSrr3yz
 
-contributors/contribution policy
---------------------------------
+## contributors
 
-me, so far.
+[hexathe6](https://github.com/hexathe6) (me), so far.
+
+### testers
+
+[lambocreeper](https://github.com/lambocreeper) found bug #1 and tested the fix for it.
+
+### contribution policy
 
 if there are any outstanding issues with nobody assigned to them, feel
 free to fix them (please post a comment on the issue you decide to fix though)
 
-local setup instructions
-------------------------
+## local setup instructions
 
 1: fork this repo.
 
@@ -50,10 +52,9 @@ both should work)
 4: if you have changes you'd like to contribute, set up a pull request
 and as long as it doesn't conflict with my idea of how it should be
 (though you should tell me what you want to contribute before you
-start to avoid wasted time on your part).
+start to avoid potential wasted time on your part).
 
-license
--------
+## license
 
 agpl v3, aka the gpl of webapps
 
