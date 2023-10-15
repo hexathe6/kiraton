@@ -239,8 +239,7 @@ function select_building(id)
   document.getElementById("right_sidebar_content").classList.remove("select");
   document.getElementById("right_sidebar_content").classList.add("selected");
   tab_state = "build_selected";
-  nocad = false;
-  
+
   // todo: move to graphics.js
   _buildings[b].el.classList.add("selected_building");
 }
@@ -248,13 +247,20 @@ function select_building(id)
 // on tab click, set the tab to be the clicked tab
 function set_tab(e)
 {
+  // set previous tab to be inactive
   let prev = document.querySelector(".left_tab.active");
   prev.classList.remove("active");
   prev.classList.add("inactive");
+
+  // get the actual tab element (instead of the text inside of it)
   let et;
   if(e.target.classList.contains("left_tab")) {et = e.target;}
   if(e.target.classList.contains("text_vertical_left")) {et = e.target.parentElement;}
+
+  // set current tab to be active
   et.classList.add("active");
+
+  // change global visibility state
   let content = document.getElementById("right_sidebar_content");
   content.classList.remove(prev.id.split("_")[0]);
   content.classList.add(et.id.split("_")[0]);
@@ -263,6 +269,12 @@ function set_tab(e)
   {
     nocad = true;
     tab_state = "build_select";
+    document.getElementById("right_sidebar_content").classList.add("select");
+  }
+  else
+  {
+    document.getElementById("right_sidebar_content").classList.remove("selected");
+    document.getElementById("right_sidebar_content").classList.remove("select");
   }
 
   for(let i = 0; i < buildings.length; i++)
@@ -280,7 +292,6 @@ function cad_down(e)
     click_start_pos = {x: e.clientX, y: e.clientY};
     document.addEventListener("mousemove",cad_move);
   }
-
 }
 
 // click-and-drag (mousemove handling)
