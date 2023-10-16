@@ -99,6 +99,29 @@ function _destroy_road(id)
   }
 }
 
+function _toggle_subtab(e)
+{
+  let el = e.target;
+  let es = e.target;
+  while(!multivalue_compare((a) => el.classList.contains(a), ["closed","open"], (a,b) => (a || b)))
+  {
+    el = el.parentElement;
+  }
+  if(es.tagName != "IMG") {es = es.children[0];}
+  if(el.classList.contains("closed"))
+  {
+    el.classList.remove("closed");
+    el.classList.add("open");
+    es.setAttribute("src","assets/expand_toggler_close.svg");
+  }
+  else if(el.classList.contains("open"))
+  {
+    el.classList.remove("open");
+    el.classList.add("closed");
+    es.setAttribute("src","assets/expand_toggler_open.svg");
+  }
+}
+
 // sets camera position
 function _update_camera()
 {
@@ -162,6 +185,11 @@ function _init()
     x.classList.add("building_node");
     setAttributes(x,{rx: 20, ry: 20});
     cd.append(x);
+  }
+
+  for(let el of document.querySelectorAll(".expand_toggler"))
+  {
+    el.addEventListener("click",(e) => _toggle_subtab(e));
   }
 
 }
