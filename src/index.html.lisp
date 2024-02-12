@@ -1,0 +1,100 @@
+(load (concatenate 'string (sb-ext:posix-getenv "HEXA6_HTMLISP_PATH") "/html.lisp"))
+(load (concatenate 'string (sb-ext:posix-getenv "HEXA6_HTMLISP_PATH") "/attributes.lisp"))
+(load (concatenate 'string (sb-ext:posix-getenv "HEXA6_HTMLISP_PATH") "/../tranclude-cl/transclude.lisp"))
+
+(defvar out
+  (concatenate
+   'string
+   "<!doctype html>"
+   (html
+    ("html" "head" "title" "meta" "link" "script" "body" "div" "svg" "defs" "g" "foreignObject" "h1" "h2" "img" "br" "use")
+    (attributes
+     ("charset" "name" "content" "rel" "href" "type" "src" "onload" "id" "style" "x" "y" "width" "height")
+     (flet ((class (&rest classes) (format nil "class=\"~{~a~^ ~}\"" classes)))
+       (html
+        (head
+         (meta `(,(charset "UTF-8")))
+         (meta `(,(name "author") ,(content "hexa6")))
+         (link `(,(rel "icon") ,(href " ")))
+         (script `(,(type "text/javascript") ,(src "src/loader.js") ,(html-attribute "loadfile" "src/loadfile")))
+         (title "kiraton"))
+        (body
+         `(,(onload "__loader_init();"))
+         (div
+          `(,(id "main"))
+          (svg
+           `(,(id "c") ,(style "width: 100%; height: 100%"))
+           (defs)
+           (g `(,(id "camera"))
+              (g `(,(id "halos"))
+                 (g `(,(id "halos_edges")))
+                 (g `(,(id "halos_fills"))))
+              (g `(,(id "roads")))
+              (g `(,(id "buildings")))
+              (g `(,(id "items")))
+              (g `(,(id "units"))))
+           (g `(,(id "ui"))
+              (foreignobject
+               `(,(x "70%") ,(y "0") ,(width "30%") ,(height "100%"))
+               (div `(,(id "right_sidebar"))
+                    (div `(,(id "left_tabs") ,(class "sidebar" "left_tabs"))
+                         (div `(,(id "build_tab") ,(class "left_tab" "active")) (div `(,(class "text_vertical_left")) "build"))
+                         (div `(,(id "population_tab") ,(class "left_tab" "inactive")) (div `(,(class "text_vertical_left")) "population"))
+                         (div `(,(id "units_tab") ,(class "left_tab" "inactive")) (div `(,(class "text_vertical_left")) "units"))
+                         (div `(,(id "debug_tab") ,(class "left_tab" "inactive")) (div `(,(class "text_vertical_left")) "debug")))
+                    (div `(,(id "right_sidebar_content") ,(class "sidebar" "content" "state" "build" "select"))
+                         (div `(,(class "build" "content" "page"))
+                              (div `(,(class "title"))
+                                   (h1 `(,(class "content_title")) "build")
+                                   (div `(,(class "content_right")) (div `(,(class "close_button")) "close")))
+                              (div `(,(class "build_select" "content" "centered"))
+                                   (div `(,(style "text-align: center")) "click to select a building to build from"))
+                              (div `(,(class "build" "content"))
+                                   (div
+                                    (div `(,(class "info_tab" "inner_tab" "closed"))
+                                         (div `(,(class "title"))
+                                              (h2 "info (partially implemented")
+                                              (div `(,(class "expand_toggler")) (img `(,(class "open") ,(width "32") ,(height "32")))))
+                                         (div `(,(class "content"))
+                                              (div `(,(class "node"))
+                                                   "node buildings don't have any information yet!"
+                                                   (br)
+                                                   "(though they might at some point)")))
+                                    (div `(,(class "list_tab" "inner_tab" "closed"))
+                                         (div `(,(class "title"))
+                                              (h2 "build (not implemented)")
+                                              (div `(,(class "expand_toggler")) (img `(,(class "open") ,(width "32") ,(height "32")))))
+                                         (div `(,(class "content"))
+                                              (div `(,(class "building_list_item" "closed"))
+                                                   (div `(,(class "title"))
+                                                        (div `(,(class "icon_container")) (svg `(,(width "64") ,(height "64")) (use `(,(href "#building_node_defs") ,(x "32") ,(y "32")))))
+                                                        (div (div "node")
+                                                             (div (div (div "2") (div "STA"))))
+                                                        (div `(,(class "expand_toggler")) (img `(,(class "open") ,(width "32") ,(height "32")))))
+                                                   (div `(,(class "content"))
+                                                        "a traffic node." (br)
+                                                        "you need these and roads for your units to be able to move." (br) (br)
+                                                        "it's a traffic node" (br)
+                                                        "you need these and roads to have" (br)
+                                                        "some units that move")))))))
+                         (div `(,(class "population" "content" "page"))
+                              (div `(,(class "title"))
+                                   (h1 `(,(class "content_title")) "population")
+                                   (div `(,(class "content_right")) (div `(,(class "close_button")) "close")))
+                              (div `(,(class "overview" "content"))))
+                         (div `(,(class "units" "content" "page"))
+                              (div `(,(class "title"))
+                                   (h1 `(,(class "content_title")) "units")
+                                   (div `(,(class "content_right")) (div `(,(class "close_button")) "close")))
+                              (div `(,(class "overview" "content"))))
+                         (div `(,(class "debug" "content" "page"))
+                              (div `(,(class "title"))
+                                   (h1 `(,(class "content_title")) "debug")
+                                   (div `(,(class "content_right")) (div `(,(class "close_button")) "close")))
+                              (div `(,(class "overview" "content")))))))))))))))))
+
+(with-open-file (ind "index.html"
+                     :direction :output
+                     :if-exists :supersede
+                     :if-does-not-exist :create)
+  (format ind "~a~%" out))

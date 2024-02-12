@@ -77,19 +77,6 @@ var tab_state = "build_select";
 // tab-related data that should persist through tab switching
 var tab_memory = {build: {selected: null}, population: {}, units: {}, debug: {}};
 
-// allows simple DRYification
-// arguments: func -> a single-argument function (like (a) => x.y[a])
-// ---------: arg -> an array of values to pass to `func`
-function multi_execute_simple(func,arg)
-{
-  let out = [];
-  for(let i = 0; i < arg.length; i++)
-  {
-    out.push(func(arg[i]));
-  }
-  return out;
-}
-
 // allows 'comparisons' between multiple function arguments more concisely
 // arguments: func -> a single-argument function (like (a) => x.y[a])
 // ---------: arg -> an array of values to pass to `func`
@@ -103,6 +90,8 @@ function multivalue_compare(func,arg,comp)
   }
   return a;
 }
+// lisp eqv: (let ((l <list>)) (flet ((f (x) <func>)) (mapcar (lambda (x) (<comp> (f (car l)) (f x))) l)))
+// js eqv: let l = <list>; let f = (x) => <func>; return l.map((x) => <comp>(f(l[0]),f(x)));
 
 // create an svg element (DRYer than otherwise)
 function createsvgel(t)
@@ -111,13 +100,7 @@ function createsvgel(t)
 }
 
 // set multiple attributes on an element
-function setAttributes(el,attrs)
-{
-  for(let a in attrs)
-  {
-    el.setAttribute(a,attrs[a]);
-  }
-}
+Element.prototype.setAttributes = function (attrs) {Object.keys(attrs).forEach((attr) => {this.setAttribute(attr,attrs[attr]);});};
 
 // set multiple css properties at once
 function setstyles(el,attrs)
@@ -258,6 +241,7 @@ function set_tab(e)
   if(e.target.classList.contains("text_vertical_left")) {et = e.target.parentElement;}
 
   // set current tab to be active
+  et.classList.remove("inactive");
   et.classList.add("active");
 
   // change global visibility state
@@ -340,7 +324,17 @@ function init()
   halos_on.building_node = true;
 
   // setup tab events
-  multi_execute_simple((n) => {document.getElementById(n + "_tab").addEventListener("mousedown", (e) => {nocad = true; document.getElementById(n + "_tab").addEventListener("mouseup", function tab_mouseup(e) {set_tab(e); document.getElementById(n + "_tab").removeEventListener("mouseup",tab_mouseup); nocad = false});})}, ["build","population","units","debug"]);
+  ["build","population","units","debug"]
+    .map((n) => {document.getElementById(n + "_tab")
+                 .addEventListener("mousedown",
+                                   (e) => {
+                                     nocad = true;
+                                     document.getElementById(n + "_tab")
+                                       .addEventListener("mouseup",
+                                                         function tab_mouseup(e) {
+                                                           set_tab(e);
+                                                           document.getElementById(n + "_tab").removeEventListener("mouseup",tab_mouseup);
+                                                           nocad = false});});});
   
   createbuilding_inner("node", {x: 500, y: 500});
   createbuilding("node", {x: 400, y: 500}, 0);

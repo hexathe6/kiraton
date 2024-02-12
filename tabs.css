@@ -1,9 +1,0 @@
-#right_sidebar_content.state.build > :not(#right_sidebar_content_build),
-#right_sidebar_content.state.population > :not(#right_sidebar_content_population),
-#right_sidebar_content.state.units > :not(#right_sidebar_content_units),
-#right_sidebar_content.state.debug > :not(#right_sidebar_content_debug),
-#right_sidebar_content.state.build.select > #right_sidebar_content_build > :not(#right_sidebar_content_build_select):not(.title),
-#right_sidebar_content.state.build.selected > #right_sidebar_content_build > #right_sidebar_content_build_select:not(.title)
-{
-    display: none;
-}

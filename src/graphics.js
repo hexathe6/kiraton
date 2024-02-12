@@ -30,14 +30,14 @@ function _createbuilding(id,type,pos)
     _halo_els.push({id: id, els: {}});
 
     let xhe = createsvgel("use");
-    setAttributes(xhe,{href: "#building_node_defs_halo_edges", x: pos.x, y: pos.y});
+    xhe.setAttributes({href: "#building_node_defs_halo_edges", x: pos.x, y: pos.y});
     //_halos.building_node.append(xhe);
     _halo_edge_g.append(xhe);
     halos.building_node.push(xhe);
     _halo_els[_halo_els.length-1].els.edge = xhe;
     
     let xhf = createsvgel("use");
-    setAttributes(xhf,{href: "#building_node_defs_halo_fill", x: pos.x, y: pos.y});
+    xhf.setAttributes({href: "#building_node_defs_halo_fill", x: pos.x, y: pos.y});
     //_halos.building_node.append(xhf);
     _halo_fill_g.append(xhf);
     halos.building_node.push(xhf);
@@ -46,7 +46,7 @@ function _createbuilding(id,type,pos)
     let x = createsvgel("use");
     _layers.buildings.append(x);
     _buildings.push({id: id, el: x});
-    setAttributes(x,{href: "#building_node_defs", x: pos.x, y: pos.y});
+    x.setAttributes({href: "#building_node_defs", x: pos.x, y: pos.y});
     x.addEventListener("mousedown", () => {nocad = true; document.addEventListener("mouseup", function enable_cad() {nocad = false; document.removeEventListener("mouseup",enable_cad);});});
     x.addEventListener("click", () => {toggle_halos("building_node");});
     x.addEventListener("click", () => {select_building(id);});
@@ -65,7 +65,7 @@ function _create_road(road)
     if(buildings[i].id == road.connectends[1]) {b = buildings[i];}
   }
   let l = createsvgel("line");
-  setAttributes(l,{x1: a.pos.x, y1: a.pos.y, x2: b.pos.x, y2: b.pos.y});
+  l.setAttributes({x1: a.pos.x, y1: a.pos.y, x2: b.pos.x, y2: b.pos.y});
   l.classList.add("road");
   _roads.push({id: road.id, el: l});
   _layers.roads.append(l);
@@ -102,23 +102,19 @@ function _destroy_road(id)
 function _toggle_subtab(e)
 {
   let el = e.target;
-  let es = e.target;
-  while(!multivalue_compare((a) => el.classList.contains(a), ["closed","open"], (a,b) => (a || b)))
+  if(el.tagName != "IMG") {el = el.children[0];}
+  let box = el.parentElement.parentElement.parentElement;
+  if(box.classList.contains("closed"))
   {
-    el = el.parentElement;
+    box.classList.remove("closed");
+    box.classList.add("open");
+    el.setAttribute("src","assets/expand_toggler_close.svg");
   }
-  if(es.tagName != "IMG") {es = es.children[0];}
-  if(el.classList.contains("closed"))
+  else if(box.classList.contains("open"))
   {
-    el.classList.remove("closed");
-    el.classList.add("open");
-    es.setAttribute("src","assets/expand_toggler_close.svg");
-  }
-  else if(el.classList.contains("open"))
-  {
-    el.classList.remove("open");
-    el.classList.add("closed");
-    es.setAttribute("src","assets/expand_toggler_open.svg");
+    box.classList.remove("open");
+    box.classList.add("closed");
+    el.setAttribute("src","assets/expand_toggler_open.svg");
   }
 }
 
@@ -126,7 +122,7 @@ function _toggle_subtab(e)
 function _update_camera()
 {
   let x = document.getElementById("camera");
-  setAttributes(x,{style: "transform: translate("+cp.x+"px, "+cp.y+"px)"});
+  x.setAttributes({style: "transform: translate("+cp.x+"px, "+cp.y+"px)"});
 }
 
 // svg defs element
@@ -156,10 +152,10 @@ function _init()
     g.id = "building_node_grad_halo";
     cd.append(g);
     let s = createsvgel("stop");
-    setAttributes(s,{offset: "0%"});
+    s.setAttributes({offset: "0%"});
     g.append(s);
     s = createsvgel("stop");
-    setAttributes(s,{offset: "100%"});
+    s.setAttributes({offset: "100%"});
     g.append(s);
 
     // original halo, for <use>
@@ -167,13 +163,13 @@ function _init()
     let xhe = createsvgel("ellipse");
     xhe.id = "building_node_defs_halo_edges";
     xhe.classList.add("building_node_halo_edges");
-    setAttributes(xhe,{rx: 200, ry: 200});
+    xhe.setAttributes({rx: 200, ry: 200});
     cd.append(xhe);
     // fill
     let xhf = createsvgel("ellipse");
     xhf.id = "building_node_defs_halo_fill";
     xhf.classList.add("building_node_halo_fill");
-    setAttributes(xhf,{rx: 200, ry: 200});
+    xhf.setAttributes({rx: 200, ry: 200});
     cd.append(xhf);
   }
 
@@ -183,7 +179,7 @@ function _init()
     let x = createsvgel("ellipse");
     x.id = "building_node_defs";
     x.classList.add("building_node");
-    setAttributes(x,{rx: 20, ry: 20});
+    x.setAttributes({rx: 20, ry: 20});
     cd.append(x);
   }
 
