@@ -16,10 +16,14 @@
          (meta `(,(charset "UTF-8")))
          (meta `(,(name "author") ,(content "hexa6")))
          (link `(,(rel "icon") ,(href " ")))
-         (script `(,(type "text/javascript") ,(src "src/loader.js") ,(html-attribute "loadfile" "src/loadfile")))
+         (link `(,(rel "stylesheet") ,(href "src/layout.css")))
+         (link `(,(rel "stylesheet") ,(href "themes/default.css")))
+         (link `(,(rel "stylesheet") ,(href "src/tabs.css")))
+         (script `(,(type "text/javascript") ,(src "src/graphics.js")))
+         (script `(,(type "text/javascript") ,(src "src/main.js")))
          (title "kiraton"))
         (body
-         `(,(onload "__loader_init();"))
+         `(,(onload "init()"))
          (div
           `(,(id "main"))
           (svg
