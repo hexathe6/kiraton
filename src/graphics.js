@@ -183,10 +183,11 @@ function _init()
     cd.append(x);
   }
 
-  for(let el of document.querySelectorAll(".expand_toggler"))
-  {
-    el.addEventListener("click",(e) => _toggle_subtab(e));
-  }
-
+  Array.from(document.querySelectorAll(".expand_toggler"))
+    .forEach((el) => {el.addEventListener("click",(e) => _toggle_subtab(e));
+                      el.children[0].src = (el.children[0].getAttribute("class") == "open")
+                      ? "assets/expand_toggler_open.svg"
+                      : "assets/expand_toggler_close.svg";});
+  
 }
 
