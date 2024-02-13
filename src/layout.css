@@ -1,3 +1,9 @@
+:root
+{
+    --font: "mono";
+    font-family: var(--font);
+}
+
 *
 {
     box-sizing: border-box;
@@ -87,6 +93,10 @@ body
 .content
 {
     width: 100%;
+}
+.content.page,
+.content.page > .content
+{
     height: 100%;
 }
 
@@ -157,6 +167,7 @@ h2
     padding: 8px;
     border: 2px solid #666;
     border-radius: 4px;
+    height: fit-content;
 }
 .inner_tab
 {

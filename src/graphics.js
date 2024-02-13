@@ -125,6 +125,26 @@ function _update_camera()
   x.setAttributes({style: "transform: translate("+cp.x+"px, "+cp.y+"px)"});
 }
 
+function _set_font(name)
+{
+  let oname = name;
+  name = name.replaceAll(" ","+") + ":300,400,500";
+  if(!document.querySelector("link[href*=\"fonts.googleapis\"]"))
+  {
+    let el = document.createElement("link");
+    el.setAttribute("rel","stylesheet");
+    el.setAttribute("href","https://fonts.googleapis.com/css?family="+name);
+    document.getElementsByTagName("head")[0].prepend(el);
+  }
+  if(!document.querySelector("link[href*=\""+oname.replaceAll(" ","+")+"\"]"))
+  {
+    document.querySelector("link[href*=\"fonts.googleapis\"]")
+      .setAttribute("href",document.querySelector("link[href*=\"fonts.googleapis\"]").getAttribute("href")
+                    +"|"+name);
+  }
+  document.querySelector(":root").style.setProperty("--font","'"+oname+"'");
+}
+
 // svg defs element
 var cd;
 
@@ -188,6 +208,5 @@ function _init()
                       el.children[0].src = (el.children[0].getAttribute("class") == "open")
                       ? "assets/expand_toggler_open.svg"
                       : "assets/expand_toggler_close.svg";});
-  
 }
 

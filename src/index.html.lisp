@@ -7,9 +7,9 @@
    'string
    "<!doctype html>"
    (html
-    ("html" "head" "title" "meta" "link" "script" "body" "div" "svg" "defs" "g" "foreignObject" "h1" "h2" "img" "br" "use")
+    ("html" "head" "title" "meta" "link" "script" "body" "div" "svg" "defs" "g" "foreignObject" "h1" "h2" "h3" "img" "br" "b" "i" "use" "input" "button")
     (attributes
-     ("charset" "name" "content" "rel" "href" "type" "src" "onload" "id" "style" "x" "y" "width" "height")
+     ("charset" "name" "content" "rel" "href" "type" "src" "onload" "id" "style" "x" "y" "width" "height" "onclick")
      (flet ((class (&rest classes) (format nil "class=\"~{~a~^ ~}\"" classes)))
        (html
         (head
@@ -95,7 +95,25 @@
                               (div `(,(class "title"))
                                    (h1 `(,(class "content_title")) "debug")
                                    (div `(,(class "content_right")) (div `(,(class "close_button")) "close")))
-                              (div `(,(class "overview" "content")))))))))))))))))
+                              (div `(,(class "overview" "content"))
+                                   (div `(,(class "inner_tab" "open"))
+                                        (div `(,(class "title"))
+                                             (h2 "change font")
+                                             (div `(,(class "expand_toggler")) (img `(,(class "close") ,(width "32") ,(height "32")))))
+                                        (div `(,(class "content"))
+                                             (div `(,(style "display: flex; flex-direction: column"))
+                                                  (button `(,(onclick "_set_font('Fira Code')")) "fira code")
+                                                  (button `(,(onclick "_set_font('Baloo 2')")) "baloo 2")
+                                                  (button `(,(onclick "_set_font('ABeeZee')")) "abeezee")
+                                                  (button `(,(onclick "_set_font('Roboto')")) "roboto"))
+                                             (div `(,(id "debug_change_font") ,(class "inner_tab" "closed"))
+                                                  (div `(,(class "title"))
+                                                       (h3 "use specific font")
+                                                       (div `(,(class "expand_toggler")) (img `(,(class "open") ,(width "32") ,(height "32")))))
+                                                  (div `(,(class "content"))
+                                                       (div "choose a font from google fonts." (br) "the font " (b "must") " be capitalised appropriately")
+                                                       (input `(,(type "text")))
+                                                       (button `(,(onclick "_set_font(this.previousSibling.value)")) "set"))))))))))))))))))))
 
 (with-open-file (ind "index.html"
                      :direction :output
