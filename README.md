@@ -34,7 +34,7 @@ discord: https://discord.gg/DAuUSrr3yz
 ### bug reporters and fix-confirmers
 
 | name | bugs reported |
-------------------------
+| - | - |
 | [lambocreeper](https://github.com/lambocreeper) | bug #1 |
 | [jreesw](https://github.com/jreesw) | bug #5 |
 
