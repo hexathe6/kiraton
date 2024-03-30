@@ -3,6 +3,7 @@
     --font: "mono";
     font-family: var(--font);
 }
+button {font-family: inherit;}
 
 *
 {
@@ -39,9 +40,9 @@ body
 
 .sidebar.left_tabs
 {
-    display: grid;
-    grid-auto-flow: column;
-    grid-template-rows: repeat(4,1fr);
+    display: flex;
+    flex-direction: column;
+    align-items: end;
     width: calc(2.5em * 1.5);
     height: 100vh;
     position: relative;
@@ -50,6 +51,7 @@ body
 
 .left_tab
 {
+    flex-grow: 1;
     display: grid;
     align-content: center;
     justify-content: center;
